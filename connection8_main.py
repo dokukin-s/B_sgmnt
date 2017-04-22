@@ -4,11 +4,17 @@
 
 
 import Image, ImageDraw
+from PIL.ImageQt import ImageQt
 import locale
 import sys
 import math, random
 from itertools import product
 from test_array_find import *
+#from interface import *
+import PIL.ImageOps 
+
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 
 
 loc=locale.getlocale()
@@ -138,16 +144,21 @@ def run(img):
 
     return (labels, output_img)
  
-def main():
+def main_seg():
 
     # открываем изображение
-    img = Image.open("5.jpg")
+    img = Image.open("o2.jpg")
+    #img = filedialogdemo.getfile()
 
 
     #производим пороговую обработку изображения,превращаем его в черно бело
 	
     img = img.point(lambda p: p > 190 and 255)
     img = img.convert('1')
+    #img = PIL.ImageOps.invert(img)
+    #img= Image.open("out.jpg")
+    
+    #img.save(ing___)
 
     #
     # наша метка представленна в виде словаря,который содержит координаты и id 
@@ -156,7 +167,34 @@ def main():
     #  output_image конечный результат обработки в наглядном виде
     
     (labels, output_img) = run(img)
+    output_img.save("o2_.jpg")
+     
+	#test----- 
+def PILimageToQImage(pilimage):
+    """converts a PIL image to QImage"""
+    imageq = ImageQt(pilimage) #convert PIL image to a PIL.ImageQt object
+    qimage = QImage(imageq) #cast PIL.ImageQt object to QImage object -that´s the trick!!!
+    return qimage    
+    #----------
+    
+def img_show():
+    app = QApplication(sys.argv)
+    #im = Image.open("out.jpg")
+    #im.show()
+    pim = Image.open("out.jpg")
+    pim.show() #show pil image
 
-    output_img.show()
+    qim = PILimageToQImage(pim)
+    pm = QPixmap(qim)
+    #return qim
+    lbl = QLabel()
+    lbl.setPixmap(pm)
+    lbl.show() #show label with qim image
+    sys.exit(app.exec_())
+
+
+
+    
+    
 
 if __name__ == "__main__": main()
